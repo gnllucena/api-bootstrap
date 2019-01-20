@@ -1,0 +1,772 @@
+{
+	"info": {
+		"_postman_id": "a131f637-81e8-4b70-ab78-764b655504f3",
+		"name": "API Bootstrap",
+		"description": "API application with swagger.\n\nContact Support: \n{\n\nName : Gabriel Lucena\n\nEmail : undefined\n\n}",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "{id}",
+					"item": [
+						{
+							"name": "Retrieve a user by their ID",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "<integer>",
+											"description": "User's ID"
+										}
+									]
+								},
+								"description": "Retrieves user only if it were created by the authenticated user"
+							},
+							"response": [
+								{
+									"name": "Your request contains bad syntax or cannot be fulfiled",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/<integer>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"<integer>"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "Text",
+									"header": [
+										{
+											"key": "X-Request-ID",
+											"value": "\"<GUID>\"",
+											"description": "Correlates HTTP requests between client and server"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"message\": \"<string>\",\n \"faults\": [\n  {\n   \"code\": \"<string>\",\n   \"error\": \"<string>\",\n   \"property\": \"<string>\",\n   \"value\": \"<string>\"\n  },\n  {\n   \"code\": \"<string>\",\n   \"error\": \"<string>\",\n   \"property\": \"<string>\",\n   \"value\": \"<string>\"\n  }\n ]\n}"
+								},
+								{
+									"name": "A user filtered by their ID",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/<integer>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"<integer>"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "Text",
+									"header": [
+										{
+											"key": "X-Request-ID",
+											"value": "\"<GUID>\"",
+											"description": "Correlates HTTP requests between client and server"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"id\": \"<integer>\",\n \"email\": \"<string>\",\n \"document\": \"<string>\",\n \"birthdate\": \"<dateTime>\",\n \"country\": \"<string>\",\n \"profile\": \"<string>\",\n \"active\": \"<boolean>\"\n}"
+								},
+								{
+									"name": "Our server failed to fulfill an apparently valid request",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/<integer>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"<integer>"
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "Text",
+									"header": [
+										{
+											"key": "X-Request-ID",
+											"value": "\"<GUID>\"",
+											"description": "Correlates HTTP requests between client and server"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"message\": \"<string>\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Edits an existing user by their ID",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"<integer>\",\n    \"email\": \"<string>\",\n    \"document\": \"<string>\",\n    \"birthdate\": \"<dateTime>\",\n    \"country\": \"<string>\",\n    \"profile\": \"<string>\",\n    \"active\": \"<boolean>\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "<integer>",
+											"description": "User's ID"
+										}
+									]
+								},
+								"description": "Edits an existing user if all validations are succeded and were created by the authenticated user"
+							},
+							"response": [
+								{
+									"name": "Our server failed to fulfill an apparently valid request",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"id\": \"<integer>\",\n    \"email\": \"<string>\",\n    \"document\": \"<string>\",\n    \"birthdate\": \"<dateTime>\",\n    \"country\": \"<string>\",\n    \"profile\": \"<string>\",\n    \"active\": \"<boolean>\"\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/<integer>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"<integer>"
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "Text",
+									"header": [
+										{
+											"key": "X-Request-ID",
+											"value": "\"<GUID>\"",
+											"description": "Correlates HTTP requests between client and server"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"message\": \"<string>\"\n}"
+								},
+								{
+									"name": "The user was successfully edited",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"id\": \"<integer>\",\n    \"email\": \"<string>\",\n    \"document\": \"<string>\",\n    \"birthdate\": \"<dateTime>\",\n    \"country\": \"<string>\",\n    \"profile\": \"<string>\",\n    \"active\": \"<boolean>\"\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/<integer>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"<integer>"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "Text",
+									"header": [
+										{
+											"key": "X-Request-ID",
+											"value": "\"<GUID>\"",
+											"description": "Correlates HTTP requests between client and server"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"id\": \"<integer>\",\n \"email\": \"<string>\",\n \"document\": \"<string>\",\n \"birthdate\": \"<dateTime>\",\n \"country\": \"<string>\",\n \"profile\": \"<string>\",\n \"active\": \"<boolean>\"\n}"
+								},
+								{
+									"name": "Your request contains bad syntax or cannot be fulfiled",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"id\": \"<integer>\",\n    \"email\": \"<string>\",\n    \"document\": \"<string>\",\n    \"birthdate\": \"<dateTime>\",\n    \"country\": \"<string>\",\n    \"profile\": \"<string>\",\n    \"active\": \"<boolean>\"\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/<integer>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"<integer>"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "Text",
+									"header": [
+										{
+											"key": "X-Request-ID",
+											"value": "\"<GUID>\"",
+											"description": "Correlates HTTP requests between client and server"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"message\": \"<string>\",\n \"faults\": [\n  {\n   \"code\": \"<string>\",\n   \"error\": \"<string>\",\n   \"property\": \"<string>\",\n   \"value\": \"<string>\"\n  },\n  {\n   \"code\": \"<string>\",\n   \"error\": \"<string>\",\n   \"property\": \"<string>\",\n   \"value\": \"<string>\"\n  }\n ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Deletes a user by their ID",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "<integer>",
+											"description": "User's ID"
+										}
+									]
+								},
+								"description": "Deletes a user if that user is deletable and were created by the authenticated user"
+							},
+							"response": [
+								{
+									"name": "The user was successfully deleted",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/<integer>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"<integer>"
+											]
+										}
+									},
+									"status": "No Content",
+									"code": 204,
+									"_postman_previewlanguage": "Text",
+									"header": [
+										{
+											"key": "X-Request-ID",
+											"value": "\"<GUID>\"",
+											"description": "Correlates HTTP requests between client and server"
+										},
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								},
+								{
+									"name": "Our server failed to fulfill an apparently valid request",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/<integer>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"<integer>"
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "Text",
+									"header": [
+										{
+											"key": "X-Request-ID",
+											"value": "\"<GUID>\"",
+											"description": "Correlates HTTP requests between client and server"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"message\": \"<string>\"\n}"
+								},
+								{
+									"name": "Your request contains bad syntax or cannot be fulfiled",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/<integer>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"<integer>"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "Text",
+									"header": [
+										{
+											"key": "X-Request-ID",
+											"value": "\"<GUID>\"",
+											"description": "Correlates HTTP requests between client and server"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"message\": \"<string>\",\n \"faults\": [\n  {\n   \"code\": \"<string>\",\n   \"error\": \"<string>\",\n   \"property\": \"<string>\",\n   \"value\": \"<string>\"\n  },\n  {\n   \"code\": \"<string>\",\n   \"error\": \"<string>\",\n   \"property\": \"<string>\",\n   \"value\": \"<string>\"\n  }\n ]\n}"
+								}
+							]
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Retrieve a paginated list of users",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						},
+						"description": "Retrieves only users that were created by the authenticated user"
+					},
+					"response": [
+						{
+							"name": "Our server failed to fulfill an apparently valid request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "Text",
+							"header": [
+								{
+									"key": "X-Request-ID",
+									"value": "\"<GUID>\"",
+									"description": "Correlates HTTP requests between client and server"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"message\": \"<string>\"\n}"
+						},
+						{
+							"name": "Your request contains bad syntax or cannot be fulfiled",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "Text",
+							"header": [
+								{
+									"key": "X-Request-ID",
+									"value": "\"<GUID>\"",
+									"description": "Correlates HTTP requests between client and server"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"message\": \"<string>\",\n \"faults\": [\n  {\n   \"code\": \"<string>\",\n   \"error\": \"<string>\",\n   \"property\": \"<string>\",\n   \"value\": \"<string>\"\n  },\n  {\n   \"code\": \"<string>\",\n   \"error\": \"<string>\",\n   \"property\": \"<string>\",\n   \"value\": \"<string>\"\n  }\n ]\n}"
+						},
+						{
+							"name": "List of users filtered by the informed parameters",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "Text",
+							"header": [
+								{
+									"key": "X-Request-ID",
+									"value": "\"<GUID>\"",
+									"description": "Correlates HTTP requests between client and server"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"items\": [\n  {\n   \"id\": \"<integer>\",\n   \"email\": \"<string>\",\n   \"document\": \"<string>\",\n   \"birthdate\": \"<dateTime>\",\n   \"country\": \"<string>\",\n   \"profile\": \"<string>\",\n   \"active\": \"<boolean>\"\n  },\n  {\n   \"id\": \"<integer>\",\n   \"email\": \"<string>\",\n   \"document\": \"<string>\",\n   \"birthdate\": \"<dateTime>\",\n   \"country\": \"<string>\",\n   \"profile\": \"<string>\",\n   \"active\": \"<boolean>\"\n  }\n ],\n \"offset\": \"<integer>\",\n \"limit\": \"<integer>\",\n \"total\": \"<integer>\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Creates a new user",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"<integer>\",\n    \"email\": \"<string>\",\n    \"document\": \"<string>\",\n    \"birthdate\": \"<dateTime>\",\n    \"country\": \"<string>\",\n    \"profile\": \"<string>\",\n    \"active\": \"<boolean>\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						},
+						"description": "Creates a new user if all validations are succeded"
+					},
+					"response": [
+						{
+							"name": "Your request contains bad syntax or cannot be fulfiled",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"<integer>\",\n    \"email\": \"<string>\",\n    \"document\": \"<string>\",\n    \"birthdate\": \"<dateTime>\",\n    \"country\": \"<string>\",\n    \"profile\": \"<string>\",\n    \"active\": \"<boolean>\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "Text",
+							"header": [
+								{
+									"key": "X-Request-ID",
+									"value": "\"<GUID>\"",
+									"description": "Correlates HTTP requests between client and server"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"message\": \"<string>\",\n \"faults\": [\n  {\n   \"code\": \"<string>\",\n   \"error\": \"<string>\",\n   \"property\": \"<string>\",\n   \"value\": \"<string>\"\n  },\n  {\n   \"code\": \"<string>\",\n   \"error\": \"<string>\",\n   \"property\": \"<string>\",\n   \"value\": \"<string>\"\n  }\n ]\n}"
+						},
+						{
+							"name": "Our server failed to fulfill an apparently valid request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"<integer>\",\n    \"email\": \"<string>\",\n    \"document\": \"<string>\",\n    \"birthdate\": \"<dateTime>\",\n    \"country\": \"<string>\",\n    \"profile\": \"<string>\",\n    \"active\": \"<boolean>\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "Text",
+							"header": [
+								{
+									"key": "X-Request-ID",
+									"value": "\"<GUID>\"",
+									"description": "Correlates HTTP requests between client and server"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"message\": \"<string>\"\n}"
+						},
+						{
+							"name": "The user was successfully created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"<integer>\",\n    \"email\": \"<string>\",\n    \"document\": \"<string>\",\n    \"birthdate\": \"<dateTime>\",\n    \"country\": \"<string>\",\n    \"profile\": \"<string>\",\n    \"active\": \"<boolean>\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "Text",
+							"header": [
+								{
+									"key": "X-Request-ID",
+									"value": "\"<GUID>\"",
+									"description": "Correlates HTTP requests between client and server"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"id\": \"<integer>\",\n \"email\": \"<string>\",\n \"document\": \"<string>\",\n \"birthdate\": \"<dateTime>\",\n \"country\": \"<string>\",\n \"profile\": \"<string>\",\n \"active\": \"<boolean>\"\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"id": "baseUrl",
+			"key": "baseUrl",
+			"value": "/",
+			"type": "string"
+		}
+	]
+}

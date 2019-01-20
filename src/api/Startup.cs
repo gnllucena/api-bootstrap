@@ -30,6 +30,7 @@ namespace API
 
         public void ConfigureServices(IServiceCollection services)
         {
+            // ASPNET
             services
                 .AddMvcCore()
                 .AddApiExplorer()
@@ -42,6 +43,7 @@ namespace API
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            // Swagger
             services
                 .AddSwaggerGen(options => {
                     options.SwaggerDoc("v1", new OpenApiInfo
@@ -53,7 +55,7 @@ namespace API
                             Name = "Gabriel Lucena",
                             Url = new Uri("https://www.github.com/gnllucena")
                         },
-                        Description = @"API application with swagger."
+                        Description = @"API application with dynamic swagger documentation, healthcheck endpoint."
                     });
                     
                     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme 
@@ -73,10 +75,15 @@ namespace API
                     options.OperationFilter<ServerFaultResponseFilter>();
                     options.OperationFilter<HttpHeadersResponseFilter>();
                 });
+
+            // Healthcheck
+            services.AddHealthChecks();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseHealthChecks("/healthcheck");
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

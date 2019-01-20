@@ -9,7 +9,7 @@ namespace API.Domain.Models
         public string Email { get; set; }
         public string Document { get; set; }
         public DateTime Birthdate { get; set; }
-        public string Country { get; set; }
+        public Country Country { get; set; }
         public Profile Profile { get; set; }
         public bool Active { get; set; }
     }
