@@ -1,0 +1,51 @@
+mongo_data
+
+*.swp
+*.*~
+project.lock.json
+.DS_Store
+*.pyc
+
+# Visual Studio Code
+#.vscode
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Test results
+tools/gatling/results
+tests/Coverage
+tools/gatling/target/test-classes/
+tests.unit/coverage.json
+tests.unit/coverage.opencover.xml
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+msbuild.log
+msbuild.err
+msbuild.wrn
+.sonarqube/
+
+# Visual Studio 2015
+.vs/
+
+# Logs
+api/log*.txt
+api/[Ll]ogs/
+/packages
+
+# Submodules
+redes-migrations-credenciamento/
+/src/api/Logs
