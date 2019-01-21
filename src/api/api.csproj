@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="MySql.Data" Version="8.0.13" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-beta" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.0.0-beta" />
   </ItemGroup>

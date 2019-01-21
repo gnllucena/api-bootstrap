@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Domain.Models;
-using API.Filters.Swagger;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -26,7 +25,7 @@ namespace API.Controllers
 
             pagination.Items = new List<User> 
             {
-                new User() { Profile = Profile.Administrator },
+                new User() { Profile = Profile.Administrator, Country = Country.Kanto },
                 new User() { Profile = Profile.Regular },
                 new User() { Profile = Profile.Administrator },
             };

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using API.Domain.Models;
-using API.Filters.Swagger;
+using API.Configuration.Filters.Swagger;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -16,6 +16,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using API.Domain.Models.Options;
+using API.Configuration.Factories;
+using API.Configuration.Middlewares;
 
 namespace API
 {
@@ -30,7 +33,7 @@ namespace API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // ASPNET
+            // Server
             services
                 .AddMvcCore()
                 .AddApiExplorer()
@@ -45,7 +48,8 @@ namespace API
 
             // Swagger
             services
-                .AddSwaggerGen(options => {
+                .AddSwaggerGen(options => 
+                {
                     options.SwaggerDoc("v1", new OpenApiInfo
                     { 
                         Title = "API Bootstrap", 
@@ -55,7 +59,7 @@ namespace API
                             Name = "Gabriel Lucena",
                             Url = new Uri("https://www.github.com/gnllucena")
                         },
-                        Description = @"API application with dynamic swagger documentation, healthcheck endpoint."
+                        Description = @"API application with dynamic swagger documentation, endpoint for health checking, mysql container."
                     });
                     
                     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme 
@@ -78,6 +82,13 @@ namespace API
 
             // Healthcheck
             services.AddHealthChecks();
+
+            // Appsettings configuration
+            services.AddOptions();
+            services.Configure<Database>(Configuration.GetSection("Database"));
+
+            // Dependency injection
+            services.AddScoped<IDatabaseFactory, DatabaseFactory>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -101,6 +112,9 @@ namespace API
             });
 
             app.UseHttpsRedirection();
+
+            app.UseMiddleware<TransactionMiddleware>();
+
             app.UseMvc();
         }
     }
