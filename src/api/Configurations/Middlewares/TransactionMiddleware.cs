@@ -1,10 +1,10 @@
 using System;
 using System.Threading.Tasks;
-using API.Configuration.Factories;
+using API.Configurations.Factories;
 using Microsoft.AspNetCore.Http;
 using MySql.Data;
 
-namespace API.Configuration.Middlewares
+namespace API.Configurations.Middlewares
 {
     public class TransactionMiddleware
     {

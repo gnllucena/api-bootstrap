@@ -4,7 +4,7 @@ using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace API.Configuration.Filters.Swagger
+namespace API.Configurations.Filters.Swagger
 {
     public class ServerFaultResponseFilter : IOperationFilter
     {
@@ -60,11 +60,4 @@ namespace API.Configuration.Filters.Swagger
             // });
         }
     }
-
-    public class ServerFault 
-    {
-        public string message { get; set; }
-    }
 }
-
-

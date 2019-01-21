@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using API.Domain.Models;
+using API.Domain.Models.Faults;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace API.Configuration.Filters.Swagger
+namespace API.Configurations.Filters.Swagger
 {
     public class KnownTypesResponseFilter : IDocumentFilter
     {        

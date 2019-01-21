@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using MySql.Data.MySqlClient;
 
-namespace API.Configuration.Factories
+namespace API.Configurations.Factories
 {
     public interface IDatabaseFactory
     {

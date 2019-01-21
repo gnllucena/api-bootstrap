@@ -19,7 +19,7 @@ namespace API.Controllers
             Description = "Retrieves only users that were created by the authenticated user"
         )]
         [SwaggerResponse(200, "List of users filtered by the informed parameters", typeof(Pagination<User>))]
-        public ActionResult<Pagination<User>> Get()
+        public ActionResult<Pagination<User>> List()
         {
             var pagination = new Pagination<User>();
 
@@ -39,7 +39,7 @@ namespace API.Controllers
             Description = "Retrieves user only if it were created by the authenticated user"
         )]
         [SwaggerResponse(200, "A user filtered by their ID", typeof(User))]
-        public ActionResult<User> GetById(
+        public ActionResult<User> Get(
             [SwaggerParameter("User's ID")]int id)
         {
             var user = new User() { Profile = Profile.Administrator };
@@ -55,7 +55,7 @@ namespace API.Controllers
         [SwaggerResponse(201, "The user was successfully created", typeof(User))]
         public ActionResult<User> Post([FromBody] User user)
         {
-            return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
+            return CreatedAtAction(nameof(Get), new { id = user.Id }, user);
         }
         
         [HttpPut("{id}")]

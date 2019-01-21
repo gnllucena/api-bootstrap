@@ -6,7 +6,7 @@ using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace API.Configuration.Filters.Swagger
+namespace API.Configurations.Filters.Swagger
 {
     public class ClientFaultResponseFilter : IOperationFilter
     {
@@ -62,20 +62,4 @@ namespace API.Configuration.Filters.Swagger
             // });
         }
     }
-
-    public class ClientFault 
-    {
-        public string message { get; set; }
-        public IEnumerable<Fault> faults { get; set; }
-
-        public class Fault 
-        {
-            public string code { get; set; }
-            public string error { get; set; }
-            public string property { get; set; }
-            public string value { get; set; }
-        }
-    }
 }
-
-

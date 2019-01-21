@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using API.Domain.Models;
-using API.Configuration.Filters.Swagger;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -17,8 +16,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using API.Domain.Models.Options;
-using API.Configuration.Factories;
-using API.Configuration.Middlewares;
+using API.Configurations.Filters.Swagger;
+using API.Configurations.Factories;
+using API.Configurations.Middlewares;
+using API.Domain.Services;
+using API.Domain.Validations;
+using FluentValidation;
 
 namespace API
 {
@@ -46,6 +49,7 @@ namespace API
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+#if (DEBUG)
             // Swagger
             services
                 .AddSwaggerGen(options => 
@@ -79,7 +83,7 @@ namespace API
                     options.OperationFilter<ServerFaultResponseFilter>();
                     options.OperationFilter<HttpHeadersResponseFilter>();
                 });
-
+#endif
             // Healthcheck
             services.AddHealthChecks();
 
@@ -88,28 +92,30 @@ namespace API
             services.Configure<Database>(Configuration.GetSection("Database"));
 
             // Dependency injection
-            services.AddScoped<IDatabaseFactory, DatabaseFactory>();
+            // Factories
+            services.AddSingleton<IDatabaseFactory, DatabaseFactory>();
+
+            // Services
+            services.AddSingleton<ISqlService, SqlService>();
+
+            // Validators
+            services.AddSingleton<IValidator<User>, UserValidator>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseHsts();
+
             app.UseHealthChecks("/healthcheck");
             
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseHsts();
-            }
-
+#if (DEBUG)            
             app.UseSwagger();
 
             app.UseSwaggerUI(options =>
             {
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Bootstrap");
             });
+#endif
 
             app.UseHttpsRedirection();
 
