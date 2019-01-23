@@ -1,19 +1,19 @@
 using System.Runtime.Serialization;
 
-namespace API.Domain.Models
+namespace API.Domain.Queries
 {
     public static class UserQuery
     {
-        const string GET = @"";
+        public const string GET = @"";
 
-        const string PAGINATE = @"";
+        public const string PAGINATE = @"";
         
-        const string INSERT = @"";
+        public const string INSERT = @"";
         
-        const string UPDATE = @"";
+        public const string UPDATE = @"";
 
-        const string DELETE = @"";
+        public const string DELETE = @"";
 
-        const string ACTIVATE_DEACTIVATE = @"";
+        public const string ACTIVATE_DEACTIVATE = @"";
     }
 }

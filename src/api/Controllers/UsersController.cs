@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Domain.Models;
+using API.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace API.Controllers
@@ -13,22 +15,25 @@ namespace API.Controllers
     [SwaggerTag("Create, edit, delete and retrieve users")]
     public class UsersController : ControllerBase
     {
+        private readonly IUserService _userService;
+
+        public UsersController(
+            IUserService userService) 
+        {
+            _userService = userService; 
+        }
+
         [HttpGet]
         [SwaggerOperation(
             Summary = "Retrieve a paginated list of users",
             Description = "Retrieves only users that were created by the authenticated user"
         )]
         [SwaggerResponse(200, "List of users filtered by the informed parameters", typeof(Pagination<User>))]
-        public ActionResult<Pagination<User>> List()
+        public async Task<ActionResult> List(
+            [SwaggerParameter("Skip that many items before beginning to return items")][BindRequired]  int offset,
+            [SwaggerParameter("Limit the number of items that are returned")][BindRequired] int limit)
         {
-            var pagination = new Pagination<User>();
-
-            pagination.Items = new List<User> 
-            {
-                new User() { Profile = Profile.Administrator, Country = Country.Kanto },
-                new User() { Profile = Profile.Regular },
-                new User() { Profile = Profile.Administrator },
-            };
+            var pagination = await _userService.ListAsync(offset, limit);
 
             return Ok(pagination);
         }
@@ -39,10 +44,10 @@ namespace API.Controllers
             Description = "Retrieves user only if it were created by the authenticated user"
         )]
         [SwaggerResponse(200, "A user filtered by their ID", typeof(User))]
-        public ActionResult<User> Get(
+        public async Task<ActionResult> Get(
             [SwaggerParameter("User's ID")]int id)
         {
-            var user = new User() { Profile = Profile.Administrator };
+            var user = await _userService.GetAsync(id);
 
             return Ok(user);
         }
@@ -53,9 +58,12 @@ namespace API.Controllers
             Description = "Creates a new user if all validations are succeded"
         )]
         [SwaggerResponse(201, "The user was successfully created", typeof(User))]
-        public ActionResult<User> Post([FromBody] User user)
+        public async Task<ActionResult> Post(
+            [FromBody] User user)
         {
-            return CreatedAtAction(nameof(Get), new { id = user.Id }, user);
+            var created = await _userService.CreateAsync(user);
+
+            return CreatedAtAction(nameof(Get), new { id = user.Id }, created);
         }
         
         [HttpPut("{id}")]
@@ -64,11 +72,13 @@ namespace API.Controllers
             Description = "Edits an existing user if all validations are succeded and were created by the authenticated user"
         )]
         [SwaggerResponse(200, "The user was successfully edited", typeof(User))]
-        public ActionResult<User> Put(
-            [SwaggerParameter("User's ID")]int id, 
+        public async Task<ActionResult> Put(
+            [SwaggerParameter("User's ID")] int id, 
             [FromBody] User user)
         {
-            return Ok(user);
+            var edited = await _userService.UpdateAsync(id, user);
+
+            return Ok(edited);
         }
 
         [HttpDelete("{id}")]
@@ -77,23 +87,33 @@ namespace API.Controllers
             Description = "Deletes a user if that user is deletable and were created by the authenticated user"
         )]
         [SwaggerResponse(204, "The user was successfully deleted")]
-        public ActionResult Delete(
+        public async Task<ActionResult> Delete(
             [SwaggerParameter("User's ID")]int id)
         {
+            await _userService.DeleteAsync(id);
+
             return NoContent();
         }
 
         [HttpPut("{id}/activate")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public ActionResult Activate(int id) 
+        [SwaggerResponse(204, "The user was successfully activated")]
+        public async Task<ActionResult> Activate(
+            [SwaggerParameter("User's ID")] int id) 
         {
+            await _userService.ActivateDeactivateAsync(id, true);
+
             return NoContent();
         }
 
         [HttpPut("{id}/deactivate")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public ActionResult Deactivate(int id) 
+        [SwaggerResponse(204, "The user was successfully deactivated")]
+        public async Task<ActionResult> Deactivate(
+            [SwaggerParameter("User's ID")] int id) 
         {
+            await _userService.ActivateDeactivateAsync(id, false);
+
             return NoContent();
         }
     }

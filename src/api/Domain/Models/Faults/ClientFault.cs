@@ -5,7 +5,7 @@ namespace API.Domain.Models.Faults
     public class ClientFault 
     {
         public string message { get; set; }
-        public IEnumerable<Fault> faults { get; set; }
+        public IList<Fault> faults { get; set; }
 
         public class Fault 
         {

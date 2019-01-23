@@ -63,7 +63,7 @@ namespace API
                             Name = "Gabriel Lucena",
                             Url = new Uri("https://www.github.com/gnllucena")
                         },
-                        Description = @"API application with dynamic swagger documentation, endpoint for health checking, mysql container."
+                        Description = @"API application with dynamic swagger documentation, endpoint for health checking, mysql container, dapper orm, fluentvalidator."
                     });
                     
                     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme 
@@ -93,10 +93,11 @@ namespace API
 
             // Dependency injection
             // Factories
-            services.AddSingleton<IDatabaseFactory, DatabaseFactory>();
+            services.AddScoped<IDatabaseFactory, DatabaseFactory>();
 
             // Services
-            services.AddSingleton<ISqlService, SqlService>();
+            services.AddScoped<ISqlService, SqlService>();
+            services.AddScoped<IUserService, UserService>();
 
             // Validators
             services.AddSingleton<IValidator<User>, UserValidator>();
@@ -119,6 +120,7 @@ namespace API
 
             app.UseHttpsRedirection();
 
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseMiddleware<TransactionMiddleware>();
 
             app.UseMvc();
