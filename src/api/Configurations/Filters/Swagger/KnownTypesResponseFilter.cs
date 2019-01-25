@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using API.Domain.Models.Faults;
+using API.Domains.Models.Faults;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;

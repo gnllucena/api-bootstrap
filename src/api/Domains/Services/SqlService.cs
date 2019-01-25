@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Configurations.Factories;
-using API.Domain.Models;
+using API.Domains.Models;
 using Dapper;
 
-namespace API.Domain.Services
+namespace API.Domains.Services
 {
     public interface ISqlService
     {

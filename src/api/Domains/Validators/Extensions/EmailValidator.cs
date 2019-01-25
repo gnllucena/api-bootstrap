@@ -1,7 +1,7 @@
 using FluentValidation.Validators;
 using System.Text.RegularExpressions;
 
-namespace API.Domain.Validators.Extensions
+namespace API.Domains.Validators.Extensions
 {
     public class EmailValidator : PropertyValidator
     {

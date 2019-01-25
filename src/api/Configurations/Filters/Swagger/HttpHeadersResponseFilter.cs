@@ -1,6 +1,6 @@
 
 using System.Collections.Generic;
-using API.Domain.Models;
+using API.Domains.Models;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;

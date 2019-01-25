@@ -1,6 +1,6 @@
 using FluentValidation.Validators;
 
-namespace API.Domain.Validators.Extensions
+namespace API.Domains.Validators.Extensions
 {
     public class OnlyNumbersValidator : PropertyValidator
     {

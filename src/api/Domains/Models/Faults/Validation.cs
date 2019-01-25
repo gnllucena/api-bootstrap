@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 
-namespace API.Domain.Models.Faults
+namespace API.Domains.Models.Faults
 {
     public enum Validation
     {
@@ -15,6 +15,8 @@ namespace API.Domain.Models.Faults
         UserDocumentNotInformed = 9,
         UserDocumentInvalid = 10,
         UserBirthdateNotInformed = 11,
-        UserBirthdateInvalid = 12
+        UserBirthdateInvalid = 12,
+        UserRepeatedDocument = 13,
+        UserRepeatedEmail = 14
     }
 }

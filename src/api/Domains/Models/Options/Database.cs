@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 
-namespace API.Domain.Models.Options
+namespace API.Domains.Models.Options
 {
     public class Database
     {

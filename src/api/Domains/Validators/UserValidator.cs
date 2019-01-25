@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using API.Domain.Models;
-using API.Domain.Models.Faults;
-using API.Domain.Validators.Extensions;
+using API.Domains.Models;
+using API.Domains.Models.Faults;
+using API.Domains.Validators.Extensions;
 using FluentValidation;
 using FluentValidation.Results;
 
-namespace API.Domain.Validations
+namespace API.Domains.Validations
 {
     public class UserValidator : AbstractValidator<User>
     {

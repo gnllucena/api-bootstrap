@@ -3,11 +3,11 @@ using System.Net;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
-using API.Domain.Models.Faults;
+using API.Domains.Models.Faults;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using static API.Domain.Models.Faults.ClientFault;
+using static API.Domains.Models.Faults.ClientFault;
 
 namespace API.Configurations.Middlewares
 {
@@ -35,6 +35,7 @@ namespace API.Configurations.Middlewares
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             var statusCode = default(HttpStatusCode);
+            
             object message = null;
 
             switch (exception)
@@ -58,7 +59,7 @@ namespace API.Configurations.Middlewares
                             code = erro.ErrorCode,
                             error = erro.ErrorMessage,
                             property = erro.PropertyName,
-                            value = erro.AttemptedValue == null ? "null " : erro.AttemptedValue.ToString()
+                            value = erro.AttemptedValue == null ? "null" : erro.AttemptedValue.ToString()
                         };
 
                         client.faults.Add(fault);

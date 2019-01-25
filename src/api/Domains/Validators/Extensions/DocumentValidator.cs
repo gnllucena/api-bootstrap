@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.Domain.Validators.Extensions
+namespace API.Domains.Validators.Extensions
 {
     public class DocumentValidator : PropertyValidator
     {

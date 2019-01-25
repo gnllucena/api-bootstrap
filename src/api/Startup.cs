@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using API.Domain.Models;
+using API.Domains.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -15,13 +15,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using API.Domain.Models.Options;
+using API.Domains.Models.Options;
 using API.Configurations.Filters.Swagger;
 using API.Configurations.Factories;
 using API.Configurations.Middlewares;
-using API.Domain.Services;
-using API.Domain.Validations;
+using API.Domains.Services;
+using API.Domains.Validations;
 using FluentValidation;
+using Microsoft.AspNetCore.Http;
 
 namespace API
 {
@@ -94,13 +95,17 @@ namespace API
             // Dependency injection
             // Factories
             services.AddScoped<IDatabaseFactory, DatabaseFactory>();
+            services.AddScoped<IRequestIdFactory, RequestIdFactory>();
 
             // Services
             services.AddScoped<ISqlService, SqlService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IValidationService, ValidationService>();
+            services.AddScoped<IAuthenticatedService, AuthenticatedService>();
 
             // Validators
             services.AddSingleton<IValidator<User>, UserValidator>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -122,7 +127,8 @@ namespace API
 
             app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseMiddleware<TransactionMiddleware>();
-
+            app.UseMiddleware<AuthorizationMiddleware>();
+            
             app.UseMvc();
         }
     }

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace API.Domain.Models.Faults
+namespace API.Domains.Models.Faults
 {
     public class ServerFault 
     {

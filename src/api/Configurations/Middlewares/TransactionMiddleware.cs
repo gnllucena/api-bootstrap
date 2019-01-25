@@ -27,7 +27,7 @@ namespace API.Configurations.Middlewares
 
                 databaseFactory.CommitTransaction();
             }
-            catch (Exception ex)
+            catch
             {
                 databaseFactory.RollbackTransaction();
 

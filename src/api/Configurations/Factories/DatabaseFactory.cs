@@ -1,7 +1,7 @@
 using System;
 using System.Data;
 using System.Threading.Tasks;
-using API.Domain.Models.Options;
+using API.Domains.Models.Options;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using MySql.Data.MySqlClient;

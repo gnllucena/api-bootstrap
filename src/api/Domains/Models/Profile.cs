@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 
-namespace API.Domain.Models
+namespace API.Domains.Models
 {
     public enum Profile
     {
