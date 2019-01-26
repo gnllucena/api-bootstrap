@@ -69,7 +69,7 @@ namespace API.Domains.Services
                 this._validationService.Throw("Email", "There is already other user with that email", user.Email, Validation.UserRepeatedDocument);
             }
 
-            user.Id = await _sqlService.Create(UserQuery.INSERT, new {
+            user.Id = await _sqlService.CreateAsync(UserQuery.INSERT, new {
                 IdProfile = user.Profile,
                 IdCountry = user.Country,
                 CreatedBy = _authenticatedService.Token().Subject,

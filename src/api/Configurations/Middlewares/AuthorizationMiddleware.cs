@@ -21,13 +21,13 @@ namespace API.Configurations.Middlewares
             _next = next;
         }
 
-        public async Task Invoke(HttpContext context, IAuthenticatedService authenticatedService)
+        public async Task Invoke(HttpContext context, IAuthenticatedService authenticatedService, ISqlService sqlService)
         {
             var token = authenticatedService.Token();
 
             if (token == null) 
             {
-                throw new SecurityException("Invalid token");
+                throw new SecurityException("Invalid token: null");
             }
 
             if (token.Issuer != "API Bootstrap Identity Server") 
@@ -35,7 +35,33 @@ namespace API.Configurations.Middlewares
                 throw new SecurityException($"Invalid issuer: { token.Issuer }");
             }
 
-            // todo: database check
+            var uri = context.Request.Path.ToUriComponent();
+
+            var path = "/users/";
+
+            if (!uri.Contains(path))
+            {
+                throw new SecurityException("Invalid uri for authorization");
+            }
+
+            var parameter = uri.Replace(path, string.Empty).Split('/')[0];
+
+            if (Int32.TryParse(parameter, out int value)) 
+            {
+                var sql = "SELECT CreatedBy FROM bootstrap.User WHERE Id = @Id";
+
+                var createdBy = await sqlService.ObtainAsync(sql, new {
+                    Id = value,
+                    CreatedBy = token.Subject
+                });
+
+                if (!string.IsNullOrWhiteSpace(createdBy) && createdBy != token.Subject) 
+                {
+                    throw new SecurityException("Resource is not from authenticated user");   
+                }
+            }
+
+            await _next(context);
         }
     }
 }

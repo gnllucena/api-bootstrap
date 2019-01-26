@@ -42,11 +42,19 @@ namespace API.Configurations.Middlewares
             {
                 case SecurityException security:
                     statusCode = HttpStatusCode.Forbidden;
-                    message = "You shall not pass!";
+
+                    var securityex = new ServerFault();
+                    securityex.message = "You shall not pass!";
+
+                    message = securityex;
                     break;
                 case ArgumentNullException argumentNull:
                     statusCode = HttpStatusCode.NotFound;
-                    message = "These aren't the droids you're looking for...";
+
+                    var argumentex = new ServerFault();
+                    argumentex.message = "These aren't the droids you're looking for...";;
+
+                    message = argumentex;
                     break;
                 case ValidationException validation:
                     statusCode = HttpStatusCode.BadRequest;
@@ -72,10 +80,10 @@ namespace API.Configurations.Middlewares
                 default:
                     statusCode = HttpStatusCode.InternalServerError;
 
-                    var server = new ServerFault();
-                    server.message = "Something is not right... Please, call our monkeys!";
+                    var defaultex = new ServerFault();
+                    defaultex.message = "Something is not right... Please, call our monkeys!";
 
-                    message = server;
+                    message = defaultex;
                     break;
             }
 

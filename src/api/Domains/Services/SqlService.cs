@@ -10,11 +10,12 @@ namespace API.Domains.Services
     public interface ISqlService
     {
         Task ExecuteAsync(string sql, object parameters);
-        Task<int> Create(string sql, object parameters);
+        Task<int> CreateAsync(string sql, object parameters);
         Task<IEnumerable<T>> ListAsync<T>(string sql, object parameters);
         Task<T> GetAsync<T>(string sql, object parameters);
         Task<int> CountAsync(string sql, object parameters);
         Task<bool> ExistsAsync(string sql, object parameters);
+        Task<string> ObtainAsync(string sql, object parameters);
     }
     
     public class SqlService : ISqlService
@@ -35,7 +36,7 @@ namespace API.Domains.Services
             await _databaseFactory.Connection().ExecuteAsync(command);
         }
 
-        public async Task<int> Create(string sql, object parameters)
+        public async Task<int> CreateAsync(string sql, object parameters)
         {
             var transaction = await _databaseFactory.BeginTransactionAsync();
 
@@ -80,6 +81,15 @@ namespace API.Domains.Services
             var command = new CommandDefinition(sql, parameters, transaction);
 
             return await _databaseFactory.Connection().QueryFirstOrDefaultAsync<bool>(command);
+        }
+
+        public async Task<string> ObtainAsync(string sql, object parameters)
+        {
+            var transaction = await _databaseFactory.BeginTransactionAsync();
+
+            var command = new CommandDefinition(sql, parameters, transaction);
+
+            return await _databaseFactory.Connection().QueryFirstOrDefaultAsync<string>(command);
         }
     }
 }
