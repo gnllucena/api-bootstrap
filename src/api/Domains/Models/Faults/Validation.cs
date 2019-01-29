@@ -4,19 +4,20 @@ namespace API.Domains.Models.Faults
 {
     public enum Validation
     {
-        UserNotInformed = 1,
-        UserProfileNotInformed = 2,
-        UserCountryNotInfored = 3,
-        UserNameNotInformed = 4,
-        UserNameExceedsLimit = 5,
-        UserEmailNotInformed = 6,
-        UserEmailExceedsLimit = 7,
-        UserEmailNotValid = 8,
-        UserDocumentNotInformed = 9,
-        UserDocumentInvalid = 10,
-        UserBirthdateNotInformed = 11,
-        UserBirthdateInvalid = 12,
-        UserRepeatedDocument = 13,
-        UserRepeatedEmail = 14
+        PaginationExceedsLimits = 1,
+        UserNotInformed = 2,
+        UserProfileNotInformed = 3,
+        UserCountryNotInfored = 4,
+        UserNameNotInformed = 5,
+        UserNameExceedsLimit = 6,
+        UserEmailNotInformed = 7,
+        UserEmailExceedsLimit = 8,
+        UserEmailNotValid = 9,
+        UserDocumentNotInformed = 10,
+        UserDocumentInvalid = 11,
+        UserBirthdateNotInformed = 12,
+        UserBirthdateInvalid = 13,
+        UserRepeatedDocument = 14,
+        UserRepeatedEmail = 15
     }
 }

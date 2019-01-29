@@ -4,6 +4,11 @@ namespace API.Domains.Models.Faults
 {
     public class ClientFault 
     {
+        public ClientFault() 
+        {
+            faults = new List<Fault>();
+        }
+
         public string message { get; set; }
         public IList<Fault> faults { get; set; }
 

@@ -12,6 +12,7 @@ namespace API.Domains.Validators.Extensions
         protected override bool IsValid(PropertyValidatorContext context)
         {
             var data = (DateTime)context.PropertyValue;
+            
             return (data >= new DateTime(1900, 1, 1) && data <= DateTime.Now);
         }
     }

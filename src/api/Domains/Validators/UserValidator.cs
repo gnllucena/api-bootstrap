@@ -12,12 +12,12 @@ namespace API.Domains.Validations
         public UserValidator()
         {
             RuleFor(x => x.Profile)
-                .NotNull()
+                .NotEmpty()
                 .WithErrorCode(((int)Validation.UserProfileNotInformed).ToString())
                 .WithMessage("User's profile must be informed");
 
             RuleFor(x => x.Country)
-                .NotNull()
+                .NotEmpty()
                 .WithErrorCode(((int)Validation.UserCountryNotInfored).ToString())
                 .WithMessage("User's country must be informed");
 

@@ -16,13 +16,15 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using API.Domains.Models.Options;
-using API.Configurations.Filters.Swagger;
+using API.Configurations.Filters.Swashbuckle;
 using API.Configurations.Factories;
 using API.Configurations.Middlewares;
 using API.Domains.Services;
 using API.Domains.Validations;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using API.Configurations.Filters.Newtonsoft;
 
 namespace API
 {
@@ -46,7 +48,13 @@ namespace API
                 .AddCors()
                 .AddJsonOptions(options => 
                 {
-                    options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+                    options.SerializerSettings.Converters.Add(new EnumConverterFilter());
+                    options.SerializerSettings.Converters.Add(new BooleanConverterFilter());
+                    options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+
+                    // options.SerializerSettings.Error = (sender, args) =>
+                    // {
+                    // };
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -64,7 +72,7 @@ namespace API
                             Name = "Gabriel Lucena",
                             Url = new Uri("https://www.github.com/gnllucena")
                         },
-                        Description = @"API application with dynamic swagger documentation, endpoint for health checking, mysql container, dapper orm, fluentvalidator, jwt authentication, authorization."
+                        Description = @"API application with dynamic swagger documentation, endpoint for health checking, mysql container, dapper orm, fluentvalidator, jwt authentication, authorization, boolean and enum custom json converters."
                     });
                     
                     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme 
@@ -83,6 +91,7 @@ namespace API
                     options.OperationFilter<ClientFaultResponseFilter>();
                     options.OperationFilter<ServerFaultResponseFilter>();
                     options.OperationFilter<HttpHeadersResponseFilter>();
+                    // options.OperationFilter<HttpHeadersRequestFilter>();
                 });
 #endif
             // Healthcheck

@@ -27,6 +27,9 @@ CREATE TABLE `bootstrap`.`Country` (
   UNIQUE INDEX `Description_UNIQUE` (`Description` ASC) VISIBLE);
 
 ALTER TABLE `bootstrap`.`User` 
+ADD INDEX `CreatedBy_idx` (`CreatedBy` ASC) VISIBLE;
+
+ALTER TABLE `bootstrap`.`User` 
 ADD INDEX `IdCountry_idx` (`IdCountry` ASC) VISIBLE;
 ;
 ALTER TABLE `bootstrap`.`User` 

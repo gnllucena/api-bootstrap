@@ -60,6 +60,8 @@ namespace API.Configurations.Middlewares
                     statusCode = HttpStatusCode.BadRequest;
 
                     var client = new ClientFault();
+                    client.message = "Something is not right...";
+
                     foreach (var erro in validation.Errors)  
                     {
                         var fault = new Fault()
@@ -81,7 +83,11 @@ namespace API.Configurations.Middlewares
                     statusCode = HttpStatusCode.InternalServerError;
 
                     var defaultex = new ServerFault();
-                    defaultex.message = "Something is not right... Please, call our monkeys!";
+                    defaultex.message = "Something is not right... Please, call one of our monkeys at help@bootstrap.com";
+
+#if (DEBUG)
+                    defaultex.message = $"Exception: {exception.Message} - Inner: {exception.InnerException?.Message} - Stacktrace: {exception.StackTrace}";
+#endif
 
                     message = defaultex;
                     break;

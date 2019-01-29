@@ -1,4 +1,6 @@
 {
+    "debug.internalConsoleOptions": "neverOpen",
+    "debug.openDebug": "neverOpen",
     "files.exclude": {
         "**/.gitignore": true,
         "**/bin": true,

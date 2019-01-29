@@ -5,7 +5,7 @@ using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace API.Configurations.Filters.Swagger
+namespace API.Configurations.Filters.Swashbuckle
 {
     public class HttpHeadersResponseFilter : IOperationFilter
     {
