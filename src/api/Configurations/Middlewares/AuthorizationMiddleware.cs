@@ -52,17 +52,17 @@ namespace API.Configurations.Middlewares
         {
             if (token == null) 
             {
-                throw new SecurityException("Invalid token: null");
+                throw new SecurityException("Invalid token 'null'");
             }
 
             if (token.Issuer != "API Bootstrap Identity Server") 
             {
-                throw new SecurityException($"Invalid issuer: { token.Issuer }");
+                throw new SecurityException($"Invalid issuer '{ token.Issuer }'");
             }
 
             if (!uri.Contains(path))
             {
-                throw new SecurityException($"Invalid uri: { uri }");
+                throw new SecurityException($"Invalid uri '{ uri }'");
             }
         }
 
@@ -77,7 +77,7 @@ namespace API.Configurations.Middlewares
 
             if (!string.IsNullOrWhiteSpace(createdBy) && createdBy != token.Subject) 
             {
-                throw new SecurityException("Resource is not from authenticated user");   
+                throw new SecurityException($"Resource '{ id }' was created by '{ createdBy }' and user '{ token.Subject }' tried to mess it");   
             }
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using API.Domains.Models;
 using API.Domains.Models.Faults;
@@ -67,11 +68,18 @@ namespace API.Domains.Services
         
         public async Task<User> GetAsync(int id)
         {
-            return await _sqlService.GetAsync<User>(UserQuery.GET, new 
+            var user = await _sqlService.GetAsync<User>(UserQuery.GET, new 
             {
                 Id = id,
                 CreatedBy = _authenticatedService.Token().Subject
             });
+
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            return user;
         }
 
         public async Task<User> CreateAsync(User user)
@@ -117,9 +125,11 @@ namespace API.Domains.Services
         {
             await _userValidator.ValidateAndThrowAsync(user);
 
+            var oldUser = await GetAsync(id);
+
             var existsEmail = await _sqlService.ExistsAsync(UserQuery.EXISTS_SAME_EMAIL, new 
             {
-                Id = id,
+                Id = oldUser.Id,
                 Email = user.Email
             });
 
@@ -130,7 +140,7 @@ namespace API.Domains.Services
 
             await _sqlService.ExecuteAsync(UserQuery.UPDATE, new 
             {
-                Id = id,
+                Id = oldUser.Id,
                 IdProfile = user.Profile,
                 IdCountry = user.Country,
                 Name = user.Name,
@@ -139,25 +149,29 @@ namespace API.Domains.Services
                 Active = user.Active
             });
 
-            user.Id = id;
+            user.Id = oldUser.Id;
 
             return user;
         }
 
         public async Task DeleteAsync(int id)
         {
+            var user = await GetAsync(id);
+
             await _sqlService.ExecuteAsync(UserQuery.DELETE, new 
             {
-                Id = id,
+                Id = user.Id,
                 CreatedBy = _authenticatedService.Token().Subject
             });
         }
 
         public async Task ActivateDeactivateAsync(int id, bool active)
         {
+            var user = await GetAsync(id);
+
             await _sqlService.ExecuteAsync(UserQuery.ACTIVATE_DEACTIVATE, new 
             {
-                Id = id,
+                Id = user.Id,
                 Active = active,
                 CreatedBy = _authenticatedService.Token().Subject
             });

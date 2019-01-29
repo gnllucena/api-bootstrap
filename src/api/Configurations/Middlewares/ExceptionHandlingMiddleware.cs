@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using API.Domains.Models.Faults;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using static API.Domains.Models.Faults.ClientFault;
 
@@ -20,7 +21,7 @@ namespace API.Configurations.Middlewares
             _next = next;
         }
 
-        public async Task Invoke(HttpContext context)
+        public async Task Invoke(HttpContext context, ILogger<ExceptionHandlingMiddleware> logger)
         {
             try
             {
@@ -28,11 +29,11 @@ namespace API.Configurations.Middlewares
             }
             catch (Exception ex)
             {
-                await HandleExceptionAsync(context, ex);
+                await HandleExceptionAsync(context, ex, logger);
             }
         }
 
-        private async Task HandleExceptionAsync(HttpContext context, Exception exception)
+        private async Task HandleExceptionAsync(HttpContext context, Exception exception, ILogger<ExceptionHandlingMiddleware> logger)
         {
             var statusCode = default(HttpStatusCode);
             
@@ -47,6 +48,8 @@ namespace API.Configurations.Middlewares
                     securityex.message = "You shall not pass!";
 
                     message = securityex;
+
+                    logger.LogWarning($"EXCEPTION HANDLING 403 | { security.Message }");
                     break;
                 case ArgumentNullException argumentNull:
                     statusCode = HttpStatusCode.NotFound;
@@ -55,6 +58,8 @@ namespace API.Configurations.Middlewares
                     argumentex.message = "These aren't the droids you're looking for...";;
 
                     message = argumentex;
+
+                    logger.LogInformation($"EXCEPTION HANDLING 404 | { argumentNull.Message }");
                     break;
                 case ValidationException validation:
                     statusCode = HttpStatusCode.BadRequest;
@@ -76,6 +81,8 @@ namespace API.Configurations.Middlewares
                     }
                     
                     message = client;
+
+                    logger.LogInformation($"EXCEPTION HANDLING 400 | { message }");
                     break;
                 case ArgumentOutOfRangeException argumentOutOfRange:
                 case TaskCanceledException taskCanceled:
@@ -90,6 +97,8 @@ namespace API.Configurations.Middlewares
 #endif
 
                     message = defaultex;
+
+                    logger.LogError($"EXCEPTION HANDLING 500 | { exception }");
                     break;
             }
 

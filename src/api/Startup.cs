@@ -104,7 +104,6 @@ namespace API
             // Dependency injection
             // Factories
             services.AddScoped<IDatabaseFactory, DatabaseFactory>();
-            services.AddScoped<IRequestIdFactory, RequestIdFactory>();
 
             // Services
             services.AddTransient<ISqlService, SqlService>();
