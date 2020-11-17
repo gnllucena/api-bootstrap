@@ -1,6 +1,12 @@
-version: '3.1'
-
+version: '2'
 services:
+  rabbitmq:
+    container_name: rabbitmq
+    build: ./tools/rabbitmq/
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
   mysql:
     build: ./tools/mysql
     container_name: mysql
@@ -10,3 +16,15 @@ services:
       MYSQL_ROOT_PASSWORD: root
     ports:
       - "3306:3306"
+
+  redis:
+    container_name: redis
+    build: ./tools/redis/
+    ports:
+      - "6379:6379"
+
+  insight:
+    container_name: insight
+    build: ./tools/insight/
+    ports:
+      - "8001:8001"

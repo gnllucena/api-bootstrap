@@ -1,38 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using Amazon.CloudWatchLogs;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
 using Serilog;
+using Serilog.Core;
+using Serilog.Events;
+using Serilog.Formatting.Json;
+using Serilog.Sinks.AwsCloudWatch;
+using System.IO;
 
 namespace API
 {
     public class Program
     {
-        public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
-            .AddEnvironmentVariables()
-            .Build();
 
         public static void Main(string[] args)
         {
-            // Verbose: Verbose is the noisiest level, rarely (if ever) enabled for a production app.
-            // Debug: Debug is used for internal system events that are not necessarily observable from the outside, but useful when determining how something happened.
-            // Information: Information events describe things happening in the system that correspond to its responsibilities and functions. Generally these are the observable actions the system can perform.
-            // Warning: When service is degraded, endangered, or may be behaving outside of its expected parameters, Warning level events are used.
-            // Error: When functionality is unavailable or expectations broken, an Error event is used.
-            // Fatal: The most critical level, Fatal events demand immediate attention.
-            
-            Log.Logger = new LoggerConfiguration()
-                .Enrich.FromLogContext()
-                .ReadFrom.Configuration(Configuration)
-                .CreateLogger();
+            Log.Logger = CreateLogger();
 
             try
             {
@@ -44,9 +29,49 @@ namespace API
             }
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+        private static Logger CreateLogger()
+        {
+            var group = "context";
+            var application = "API.Context";
+
+#if (!DEBUG)
+            var client = Configuration.GetAWSOptions().CreateServiceClient<IAmazonCloudWatchLogs>();
+
+            var options = new CloudWatchSinkOptions
+            {
+                LogGroupName = $"applications/{group}/{application}",
+                LogStreamNameProvider = new DefaultLogStreamProvider(),
+                BatchSizeLimit = 100,
+                QueueSizeLimit = 10000,
+                RetryAttempts = 3,
+                LogGroupRetentionPolicy = LogGroupRetentionPolicy.FiveDays,
+                TextFormatter = new JsonFormatter(),
+                MinimumLogEventLevel = LogEventLevel.Information
+            };   
+#endif
+            return new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .Enrich.WithProperty("Application", application)
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+                .MinimumLevel.Debug()
+                .WriteTo.Console(
+                    outputTemplate: "{NewLine}[{Timestamp:HH:mm:ss.fff} {Level:u3} {Application}] {Scope} {Message}{NewLine}{Exception}"
+                )
+#if (!DEBUG)
+                .WriteTo.AmazonCloudWatch(options, client)
+#endif
+                .CreateLogger();
+        }
+
+        private static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseSerilog()
                 .UseStartup<Startup>();
+
+        private static IConfiguration Configuration { get; } = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddEnvironmentVariables()
+            .Build();
     }
 }

@@ -1,30 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using API.Domains.Models;
+using API.Filters.Swashbuckle;
+using API.Middlewares;
+using Common.Domain.Entities;
+using Common.Factories;
+using Common.Models.Options;
+using Common.Repositories;
+using Common.Services;
+using Common.Validators;
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using API.Domains.Models.Options;
-using API.Configurations.Filters.Swashbuckle;
-using API.Configurations.Factories;
-using API.Configurations.Middlewares;
-using API.Domains.Services;
-using API.Domains.Validations;
-using FluentValidation;
-using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
-using API.Configurations.Filters.Newtonsoft;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 
 namespace API
 {
@@ -39,105 +29,96 @@ namespace API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // Server
             services
                 .AddMvcCore()
                 .AddApiExplorer()
                 .AddDataAnnotations()
-                .AddJsonFormatters()
                 .AddCors()
-                .AddJsonOptions(options => 
+                .AddNewtonsoftJson(options =>
                 {
-                    options.SerializerSettings.Converters.Add(new EnumConverterFilter());
-                    options.SerializerSettings.Converters.Add(new BooleanConverterFilter());
+                    options.SerializerSettings.Converters.Add(new StringEnumConverter { AllowIntegerValues = true });
                     options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
-
-                    // options.SerializerSettings.Error = (sender, args) =>
-                    // {
-                    // };
-                })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
-#if (DEBUG)
-            // Swagger
-            services
-                .AddSwaggerGen(options => 
-                {
-                    options.SwaggerDoc("v1", new OpenApiInfo
-                    { 
-                        Title = "API Bootstrap", 
-                        Version = "v1",
-                        Contact = new OpenApiContact
-                        {
-                            Name = "Gabriel Lucena",
-                            Url = new Uri("https://www.github.com/gnllucena")
-                        },
-                        Description = @"API application with dynamic swagger documentation, endpoint for health checking, mysql container, dapper orm, fluentvalidator, jwt authentication, authorization, boolean and enum custom json converters."
-                    });
-                    
-                    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme 
+                    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                    options.SerializerSettings.Error = (sender, args) =>
                     {
-                        In = ParameterLocation.Header,
-                        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-                        Name = "Authorization",
-                        Type = SecuritySchemeType.ApiKey
-                    });
+                        throw args?.ErrorContext?.Error;
+                    };
+                })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
-                    options.DescribeAllEnumsAsStrings();
-
-                    options.EnableAnnotations();
-                    
-                    options.DocumentFilter<KnownTypesResponseFilter>();
-                    options.OperationFilter<ClientFaultResponseFilter>();
-                    options.OperationFilter<ServerFaultResponseFilter>();
-                    options.OperationFilter<HttpHeadersResponseFilter>();
-                    // options.OperationFilter<HttpHeadersRequestFilter>();
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "API",
+                    Version = "v1",
+                    Description = @"API operations."
                 });
-#endif
-            // Healthcheck
+
+                options.EnableAnnotations();
+
+                options.DocumentFilter<KnownTypesResponseFilter>();
+                options.OperationFilter<ClientFaultResponseFilter>();
+                options.OperationFilter<ServerFaultResponseFilter>();
+                options.OperationFilter<HttpHeadersResponseFilter>();
+            });
+
             services.AddHealthChecks();
 
-            // Appsettings configuration
             services.AddOptions();
-            services.Configure<Database>(Configuration.GetSection("Database"));
 
-            // Dependency injection
-            // Factories
-            services.AddScoped<IDatabaseFactory, DatabaseFactory>();
+            services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
 
-            // Services
+            services.Configure<Connection>(Configuration.GetSection("Database"));
+            services.Configure<Cache>(Configuration.GetSection("Cache"));
+            services.Configure<Messaging>(Configuration.GetSection("Messaging"));
+
+            services.AddSingleton<IDatabaseFactory, DatabaseFactory>();
+            services.AddSingleton<IMessagingFactory, MessagingFactory>();
+            services.AddSingleton<ICacheFactory, CacheFactory>();
+
             services.AddTransient<ISqlService, SqlService>();
-            services.AddTransient<IUserService, UserService>();
             services.AddTransient<IValidationService, ValidationService>();
             services.AddTransient<IAuthenticatedService, AuthenticatedService>();
+            services.AddTransient<IUserService, UserService>();
 
-            // Validators
             services.AddSingleton<IValidator<User>, UserValidator>();
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddScoped<IUserRepository, UserRepository>();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseHsts();
+            app.UseCors(configuration => configuration
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .WithExposedHeaders("Content-Disposition"));
 
             app.UseHealthChecks("/healthcheck");
-            
-#if (DEBUG)            
-            app.UseSwagger();
+
+            app.UseSwagger(options =>
+            {
+                options.SerializeAsV2 = true;
+            });
 
             app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Bootstrap");
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "API");
             });
-#endif
 
             app.UseHttpsRedirection();
 
+            app.UseMiddleware<LoggingMiddleware>();
             app.UseMiddleware<ExceptionHandlingMiddleware>();
-            app.UseMiddleware<TransactionMiddleware>();
-            app.UseMiddleware<AuthorizationMiddleware>();
-            
-            app.UseMvc();
+            app.UseMiddleware<DatabaseTransactionMiddleware>();
+
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }
