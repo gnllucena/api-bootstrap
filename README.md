@@ -41,12 +41,12 @@ In this application there is a [Exception Handling Middleware](https://github.co
 ## Controllers
 They serialize requests and send responses, that's all.
 
-## services
+## Services
 Get everything your entity needs, validate it through FluentValidation and ValidationService, send it to it's repository (or cache, or message broker)
 
 Input, processing, output.
 
-## validations 
+## Validations 
 Assyncronous validations should use [ValidationService.cs](https://github.com/gnllucena/api-bootstrap/blob/master/src/Common/Services/ValidationService.cs), syncronous validation should use fluentvalidation 
 
 ## Repositories
