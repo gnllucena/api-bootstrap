@@ -1,8 +1,12 @@
 using Common.Domain.Entities;
+using Common.Domain.Models.Events;
 using Common.Domain.Models.Responses;
+using Common.Factories;
+using Common.Models.Options;
 using Common.Repositories;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -25,19 +29,34 @@ namespace Common.Services
         private readonly IValidator<User> _userValidator;
         private readonly IValidationService _validationService;
         private readonly IUserRepository _userRepository;
+        private readonly IMessagingFactory _messagingFactory;
+        private readonly ICacheFactory _cacheFactory;
+        private readonly IMessagingService _messagingService;
+        private readonly ICacheService _cacheService;
+        private readonly Messaging _messaging;
 
         public UserService(
             ILogger<UserService> logger,
             IAuthenticatedService authenticatedService,
             IValidator<User> userValidator,
             IValidationService validationService,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            IMessagingFactory messagingFactory,
+            ICacheFactory cacheFactory,
+            IMessagingService messagingService,
+            ICacheService cacheService,
+            IOptions<Messaging> messaging)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _authenticatedService = authenticatedService ?? throw new ArgumentNullException(nameof(authenticatedService));
             _userValidator = userValidator ?? throw new ArgumentNullException(nameof(userValidator));
             _validationService = validationService ?? throw new ArgumentNullException(nameof(validationService));
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            _messagingFactory = messagingFactory ?? throw new ArgumentNullException(nameof(messagingFactory));
+            _cacheFactory = cacheFactory ?? throw new ArgumentNullException(nameof(cacheFactory));
+            _messagingService = messagingService ?? throw new ArgumentNullException(nameof(messagingService));
+            _cacheService = cacheService ?? throw new ArgumentNullException(nameof(cacheService));
+            _messaging = messaging.Value ?? throw new ArgumentNullException(nameof(messaging));
         }
 
         public async Task<User> InsertAsync(User user)
@@ -55,6 +74,9 @@ namespace Common.Services
             var id = await _userRepository.InsertAsync(user);
 
             var newUser = await GetAsync(id);
+
+            MessageBroker(newUser);
+            await CacheAsync("NEWUSER", newUser, false, false);
 
             _logger.LogDebug($"End of {nameof(UserService)}.{nameof(InsertAsync)}");
 
@@ -78,6 +100,8 @@ namespace Common.Services
 
             var updatedUser = await GetAsync(id);
 
+            await CacheAsync("UPDATEDUSER", updatedUser, false, false);
+
             _logger.LogDebug($"End of {nameof(UserService)}.{nameof(UpdateAsync)}");
 
             return updatedUser;
@@ -88,6 +112,9 @@ namespace Common.Services
             _logger.LogDebug($"User {_authenticatedService.GetUserKey()} is starting {nameof(UserService)}.{nameof(DeleteAsync)}");
 
             await _userRepository.DeleteAsync(id);
+
+            await CacheAsync("NEWUSER", id, false, true);
+            await CacheAsync("UPDATEDUSER", id, false, true);
 
             _logger.LogDebug($"End of {nameof(UserService)}.{nameof(DeleteAsync)}");
         }
@@ -114,9 +141,60 @@ namespace Common.Services
 
             var pagination = await _userRepository.PaginateAsync(offset, limit, id, name, email, password, active, confirmed, fromCreated, toCreated, createdBy, fromUpdated, toUpdated, updatedBy);
 
+            foreach (var paginated in pagination.Itens)
+            {
+                await CacheAsync("PAGINATEDUSERS", paginated, true, false);
+            }
+
             _logger.LogDebug($"End of {nameof(UserService)}.{nameof(PaginateAsync)}");
 
             return pagination;
+        }
+
+        private void MessageBroker(User user)
+        {
+            var newUserEvent = new NewUserEvent(user);
+
+            try
+            {
+                var model = _messagingFactory.Configure();
+
+                _messagingService.Queue(_messaging.Publishing.Exchange.Name, _messaging.Publishing.Routingkey, newUserEvent);
+            }
+            finally
+            {
+                _messagingFactory.Disconnect();
+            }
+        }
+
+        private async Task CacheAsync(string key, object value, bool isList, bool isDelete)
+        {
+            try
+            {
+                await _cacheFactory.ConnectAsync();
+
+                // don't ever do something like this
+
+                if (isDelete)
+                {
+                    await _cacheService.RemoveAsync(key);
+                }
+                else
+                {
+                    if (isList)
+                    {
+                        await _cacheService.AddListAsync(key, value, DateTime.Now.AddDays(1));
+                    }
+                    else
+                    {
+                        await _cacheService.AddSingleAsync(key, value, DateTime.Now.AddDays(1));
+                    }
+                }
+            }
+            finally
+            {
+                await _cacheFactory.DisconnectAsync();
+            }
         }
     }
 }

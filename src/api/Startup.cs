@@ -1,6 +1,7 @@
 using API.Filters.Swashbuckle;
 using API.Middlewares;
 using Common.Domain.Entities;
+using Common.Domain.Models.Events;
 using Common.Factories;
 using Common.Models.Options;
 using Common.Repositories;
@@ -81,6 +82,8 @@ namespace API
             services.AddTransient<IValidationService, ValidationService>();
             services.AddTransient<IAuthenticatedService, AuthenticatedService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IMessagingService, MessagingService>();
+            services.AddTransient<ICacheService, CacheService>();
 
             services.AddSingleton<IValidator<User>, UserValidator>();
 

@@ -88,7 +88,7 @@ namespace Common.Factories
 
             _channel.QueueDeclare(_messaging.Consuming.Deadletter.Queue, true, false, false, new Dictionary<string, object>()
             {
-                { "x-dead-letter-exchange", _messaging.Consuming.Exchange },
+                { "x-dead-letter-exchange", _messaging.Consuming.Exchange.Name },
                 { "x-dead-letter-routing-key", _messaging.Consuming.Bindingkey },
                 { "x-message-ttl", _messaging.TTL }
             });
@@ -135,7 +135,7 @@ namespace Common.Factories
 
                 _channel.QueueDeclare(_messaging.Publishing.Queue, true, false, false, new Dictionary<string, object>()
                 {
-                    { "x-dead-letter-exchange", _messaging.Publishing.Deadletter.Exchange },
+                    { "x-dead-letter-exchange", _messaging.Publishing.Deadletter.Exchange.Name },
                     { "x-dead-letter-routing-key", _messaging.Publishing.Deadletter.Routingkey }
                 });
 
@@ -152,7 +152,7 @@ namespace Common.Factories
 
                 _channel.QueueDeclare(_messaging.Publishing.Deadletter.Queue, true, false, false, new Dictionary<string, object>()
                 {
-                    { "x-dead-letter-exchange", _messaging.Publishing.Exchange },
+                    { "x-dead-letter-exchange", _messaging.Publishing.Exchange.Name },
                     { "x-dead-letter-routing-key", _messaging.Publishing.Routingkey },
                     { "x-message-ttl", _messaging.TTL }
                 });
@@ -168,9 +168,14 @@ namespace Common.Factories
 
         public void Disconnect()
         {
-            if (_connection.IsOpen)
+            if (_connection != null && _connection.IsOpen)
             {
+                _logger.LogInformation("RABBITMQ | CLOSING CONNECTION");
+
                 _connection.Close();
+
+                _connection = null;
+                _channel = null;
             }
         }
 
