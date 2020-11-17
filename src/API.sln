@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{91EB6F66-6E8E-4BA8-84C4-392FF8A3599A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "api\API.csproj", "{91EB6F66-6E8E-4BA8-84C4-392FF8A3599A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{A6668F92-C465-4BC3-8FF0-C74701C23425}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "common\Common.csproj", "{A6668F92-C465-4BC3-8FF0-C74701C23425}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{8A137556-42E1-4A49-B348-B6DB56BEE2FF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "tests\Tests.csproj", "{8A137556-42E1-4A49-B348-B6DB56BEE2FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
