@@ -153,7 +153,10 @@ namespace Common.Services
 
         private void MessageBroker(User user)
         {
-            var newUserEvent = new NewUserEvent(user);
+            var newUserEvent = new NewUserEvent()
+            {
+                Id = user.Id
+            };
 
             try
             {

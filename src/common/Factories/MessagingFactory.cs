@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
 using System;
 using System.Collections.Generic;
 
@@ -125,13 +124,11 @@ namespace Common.Factories
                 !string.IsNullOrWhiteSpace(_messaging.Publishing.Deadletter.Exchange.Type)
                )
             {
-                _logger.LogInformation("RABBITMQ | CREATING POSTING EXCHANGE: {_messagingPublishingExchange}",
-                    _messaging.Publishing.Exchange.Name);
+                _logger.LogInformation($"RABBITMQ | CREATING POSTING EXCHANGE: {_messaging.Publishing.Exchange.Name}");
 
                 _channel.ExchangeDeclare(_messaging.Publishing.Exchange.Name, ExchangeType(_messaging.Publishing.Exchange.Type), true);
 
-                _logger.LogInformation("RABBITMQ | CREATING POSTING QUEUE: {_messagingPublishingQueue}",
-                    _messaging.Publishing.Queue);
+                _logger.LogInformation($"RABBITMQ | CREATING POSTING QUEUE: {_messaging.Publishing.Queue}");
 
                 _channel.QueueDeclare(_messaging.Publishing.Queue, true, false, false, new Dictionary<string, object>()
                 {
@@ -142,13 +139,11 @@ namespace Common.Factories
                 _logger.LogInformation("RABBITMQ | BINDING POSTING EXCHANGE AND QUEUE");
                 _channel.QueueBind(_messaging.Publishing.Queue, _messaging.Publishing.Exchange.Name, _messaging.Publishing.Routingkey);
 
-                _logger.LogInformation("RABBITMQ | CREATING POSTING DEADLETTER EXCHANGE: {_messagingPublishingDeadletterExchange}",
-                    _messaging.Publishing.Deadletter.Exchange.Name);
+                _logger.LogInformation($"RABBITMQ | CREATING POSTING DEADLETTER EXCHANGE: {_messaging.Publishing.Deadletter.Exchange.Name}");
 
                 _channel.ExchangeDeclare(_messaging.Publishing.Deadletter.Exchange.Name, ExchangeType(_messaging.Publishing.Deadletter.Exchange.Type), true);
 
-                _logger.LogInformation("RABBITMQ | CREATING POSTING DEADLETTER QUEUE: {_messagingPublishingDeadletterQueue}",
-                    _messaging.Publishing.Deadletter.Queue);
+                _logger.LogInformation($"RABBITMQ | CREATING POSTING DEADLETTER QUEUE: {_messaging.Publishing.Deadletter.Queue}");
 
                 _channel.QueueDeclare(_messaging.Publishing.Deadletter.Queue, true, false, false, new Dictionary<string, object>()
                 {

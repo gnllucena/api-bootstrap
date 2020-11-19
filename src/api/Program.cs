@@ -31,7 +31,7 @@ namespace API
 
         private static Logger CreateLogger()
         {
-            var group = "context";
+            var group = "Context";
             var application = "API.Context";
 
 #if (!DEBUG)
@@ -39,7 +39,7 @@ namespace API
 
             var options = new CloudWatchSinkOptions
             {
-                LogGroupName = $"applications/{group}/{application}",
+                LogGroupName = $"Applications/{group}/{application}",
                 LogStreamNameProvider = new DefaultLogStreamProvider(),
                 BatchSizeLimit = 100,
                 QueueSizeLimit = 10000,
@@ -55,7 +55,7 @@ namespace API
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
                 .MinimumLevel.Debug()
                 .WriteTo.Console(
-                    outputTemplate: "{NewLine}[{Timestamp:HH:mm:ss.fff} {Level:u3} {Application}] {Scope} {Message}{NewLine}{Exception}"
+                    outputTemplate: "{NewLine}[{Timestamp:HH:mm:ss.fff} {Level:u3}] {Scope} {Message}{NewLine}{Exception}"
                 )
 #if (!DEBUG)
                 .WriteTo.AmazonCloudWatch(options, client)
