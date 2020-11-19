@@ -1,4 +1,5 @@
 # API Bootstrap
+The philosophy behind this repository is pretty simple: every time a new API has to be created, the same set of functionalities must be written, and I got tired of writing it over and over again. You see, good programmers are lazy, and I am very lazy.
 
 ## How to use it
 If you have [Make](https://www.gnu.org/software/make/) available on your OS, you can run dependecies services using it (On Makefile folder):
