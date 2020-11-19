@@ -1,4 +1,4 @@
-# Queue Bootstrap
+# API Bootstrap
 
 ## How to use it
 If you have [Make](https://www.gnu.org/software/make/) available on your OS, you can run dependecies services using it (On Makefile folder):
@@ -77,3 +77,4 @@ Really, log everything, when your application crashes, they'll be your best frie
 	* MySQL user table - [Dockerfile](https://github.com/gnllucena/api-bootstrap/blob/master/tools/mysql/Dockerfile) - lines 20 and 24
 	* RabbitMQ configuration - [docker-compose.yml](https://github.com/gnllucena/api-bootstrap/blob/master/docker-compose.yml) - lines 3 to 8
 	* RabbitMQ user, virtual host and permissions configurations - [Dockerfile](https://github.com/gnllucena/api-bootstrap/blob/master/tools/rabbitmq/Dockerfile) - lines 3 and 4
+
